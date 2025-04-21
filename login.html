@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>HibaConnect - Login & Signup</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #020024 0%, #090979 35%, #00d4ff 100%);
+            background-attachment: fixed;
+      padding: 20px;
+    }
+
+    .wrapper {
+      position: relative;
+      width: 100%;
+      max-width: 400px;
+      height: 500px;
+      background: #ffffff;
+      box-shadow: 0 0 50px #0ef;
+      border-radius: 20px;
+      padding: 40px;
+      overflow: hidden;
+    }
+
+    .form-wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      height: 100%;
+      transition: 1s ease-in-out;
+    }
+
+    .wrapper.active .form-wrapper.sign-in {
+      transform: translateY(-450px);
+    }
+
+    .wrapper .form-wrapper.sign-up {
+      position: absolute;
+      top: 450px;
+      left: 0;
+      width: 100%;
+    }
+
+    .wrapper.active .form-wrapper.sign-up {
+      transform: translateY(-450px);
+    }
+
+    h2 {
+      font-size: 28px;
+      color: #2e399c;
+      text-align: center;
+    }
+
+    .input-group {
+      position: relative;
+      margin: 25px 0;
+      border-bottom: 2px solid #2e399c;
+    }
+
+    .input-group label {
+      position: absolute;
+      top: 50%;
+      left: 5px;
+      transform: translateY(-50%);
+      font-size: 16px;
+      color: #2e399c;
+      pointer-events: none;
+      transition: .5s;
+    }
+
+    .input-group input {
+      width: 100%;
+      height: 40px;
+      font-size: 16px;
+      color: #2e399c;
+      padding: 0 5px;
+      background: transparent;
+      border: none;
+      outline: none;
+    }
+
+    .input-group input:focus ~ label,
+    .input-group input:valid ~ label {
+      top: -5px;
+    }
+
+    .remember {
+      margin: -5px 0 15px 5px;
+    }
+
+    .remember label {
+      color: #2e399c;
+      font-size: 14px;
+    }
+
+    .remember input {
+      accent-color: #0ef;
+    }
+
+    button {
+      width: 100%;
+      height: 40px;
+      background: #0ef;
+      box-shadow: 0 0 10px #0ef;
+      font-size: 16px;
+      color: #000;
+      font-weight: 500;
+      cursor: pointer;
+      border-radius: 30px;
+      border: none;
+      outline: none;
+    }
+
+    button:hover {
+      background: #0ef;
+      box-shadow: 0 0 10px #0ef;
+    }
+
+    .signUp-link {
+      font-size: 14px;
+      text-align: center;
+      margin: 15px 0;
+    }
+
+    .signUp-link p {
+      color: #2e399c;
+    }
+
+    .signUp-link p a {
+      color: #0ef;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .signUp-link p a:hover {
+      text-decoration: underline;
+    }
+
+    footer {
+      position: absolute;
+      bottom: 10px;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      color: white;
+      font-size: 12px;
+    }
+
+    /* 📱 Responsive */
+    @media (max-width: 450px) {
+      .wrapper {
+    height: auto;
+    padding: 20px 15px;
+    border-radius: 16px;
+  }
+  .input-group {
+    margin: 20px 0;
+  }
+
+  .input-group input {
+    font-size: 14px;
+    height: 36px;
+  }
+      .form-wrapper {
+    flex-direction: column;
+    padding: 0;
+  }
+
+  h2 {
+    font-size: 22px;
+  }
+
+  button {
+    font-size: 14px;
+    height: 36px;
+  }
+  .signUp-link {
+    font-size: 13px;
+  }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="form-wrapper sign-in">
+      <form>
+        <h2>Login</h2>
+        <div class="input-group">
+          <input type="text" required />
+          <label>Username</label>
+        </div>
+        <div class="input-group">
+          <input type="password" required />
+          <label>Password</label>
+        </div>
+        <div class="remember">
+          <label><input type="checkbox" /> Remember me</label>
+        </div>
+        <button type="submit">Login</button>
+        <div class="signUp-link">
+          <p>Don't have an account? <a href="#" class="signUpBtn-link">Sign Up</a></p>
+        </div>
+      </form>
+    </div>
+    <div class="form-wrapper sign-up">
+      <form>
+        <h2>Sign Up</h2>
+        <div class="input-group">
+          <input type="text" required />
+          <label>Username</label>
+        </div>
+        <div class="input-group">
+          <input type="password" required />
+          <label>Password</label>
+        </div>
+        <div class="remember">
+          <label><input type="checkbox" /> I agree to the terms & conditions</label>
+        </div>
+        <button type="submit">Sign Up</button>
+        <div class="signUp-link">
+          <p>Already have an account? <a href="#" class="signInBtn-link">Sign In</a></p>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const signInBtnLink = document.querySelector('.signInBtn-link');
+    const signUpBtnLink = document.querySelector('.signUpBtn-link');
+    const wrapper = document.querySelector('.wrapper');
+
+    signUpBtnLink.addEventListener('click', () => {
+      wrapper.classList.toggle('active');
+    });
+
+    signInBtnLink.addEventListener('click', () => {
+      wrapper.classList.toggle('active');
+    });
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
+
+  <script>
+    document.querySelector('.sign-in form').addEventListener('submit', async function (event) {
+      event.preventDefault();
+      const username = document.querySelector('.sign-in input[type="text"]').value;
+      const password = document.querySelector('.sign-in input[type="password"]').value;
+
+      try {
+        const response = await fetch('http://localhost:5001/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password })
+        });
+
+        if (response.headers.get('content-type').includes('application/json')) {
+          const data = await response.json();
+          if (response.ok) {
+            alert(data.message);
+            if (data.token) {
+              const decodedToken = jwt_decode(data.token);
+              if (decodedToken.role === 'Admin') {
+                window.location.href = 'Accueil.html';
+              } else if (decodedToken.role === 'User') {
+                window.location.href = 'Accueil1.html';
+              } else {
+                alert('Rôle non reconnu');
+              }
+            } else {
+              alert("Le token n'a pas été renvoyé");
+            }
+          } else {
+            throw new Error(data.message || 'Échec de la connexion');
+          }
+        } else {
+          throw new Error('Réponse non JSON');
+        }
+      } catch (error) {
+        console.error('Erreur login :', error);
+        alert('Erreur lors de la connexion.');
+      }
+    });
+
+    document.querySelector('.sign-up form').addEventListener('submit', async function (event) {
+      event.preventDefault();
+      const username = document.querySelector('.sign-up input[type="text"]').value;
+      const password = document.querySelector('.sign-up input[type="password"]').value;
+
+      try {
+        const response = await fetch('http://localhost:5001/api/auth/signup', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password, role: 'User' })
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          alert(data.message);
+          window.location.href = 'login.html';
+        } else {
+          const errorData = await response.json();
+          throw new Error(errorData.message || 'Échec de l\'inscription');
+        }
+      } catch (error) {
+        console.error("Erreur signup :", error);
+        alert("Erreur lors de l'inscription.");
+      }
+    });
+  </script>
+
+  <footer>
+    Copyright © 2025. All rights reserved
+  </footer>
+</body>
+</html>

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HibaConnect</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css">
+
+
+    <style>
+        /* Styles généraux */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #020024 0%, #090979 35%, #00d4ff 100%);
+            background-attachment: fixed;
+            text-align: center;
+            padding: 20px;
+        }
+
+        main {
+            max-width: 90%;
+            text-align: center;
+            padding: 20px;
+        }
+
+        /* Image du logo */
+        .logo {
+            width: 100%;
+            max-width: 250px;
+            height: auto;
+            margin-bottom: 20px;
+        }
+
+        /* Style du titre */
+        h1 {
+            font-size: 2.5em;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Bouton stylisé */
+        .btn {
+            font-size: 16px;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 25px;
+            background: linear-gradient(45deg, #8d49fd, #5691f3);
+            color: white;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn:hover {
+            background: linear-gradient(45deg, #5691f3, #8d49fd);
+        }
+
+        /* Footer */
+        footer {
+      position: absolute;
+      bottom: 10px;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      color: white;
+      font-size: 12px;
+    }
+
+        /* ✅ MEDIA QUERIES (Responsive) ✅ */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2em;
+            }
+
+            .btn {
+                font-size: 14px;
+                padding: 10px 20px;
+            }
+
+            main {
+                padding: 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.8em;
+            }
+
+            .btn {
+                font-size: 14px;
+                padding: 8px 18px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <main>
+        <img src="images/Capture_d_écran_2025-03-25_130909-removebg-preview.png" class="logo">
+        <div id="welcome">
+            <h1>Bienvenue à HibaConnect !</h1>
+            <button class="btn" id="loginBtn">Log In</button>
+        </div>
+    </main>
+
+    <script>
+        document.getElementById('loginBtn').addEventListener('click', function () {
+            window.location.href = 'login.html';
+        });
+    </script>
+
+    <footer>
+        Copyright © 2025. All rights reserved
+    </footer>
+</body>
+
+</html>

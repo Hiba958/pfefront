@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ObjectApp - Profil</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <div class="header-left">
+            <div class="app-name">
+                <a href="Accueil.html">
+                    <i class="fas fa-arrow-left"></i>
+                    <img src="images/Capture_d_écran_2025-03-25_130909-removebg-preview.png" class="logo" alt="Logo">
+                </a>
+            </div>
+            <button class="menu-btn" onclick="toggleMenu()">☰</button>
+
+        </div>
+        <nav id="mainNav">
+            <ul>
+                <li><button class="nav-button" data-target="configuration">Gestion des objets</button></li>
+                <li><button class="nav-button" data-target="supervision">Supervision</button></li>
+                <li><button class="nav-button" data-target="contact">Contact</button></li>
+            </ul>
+        </nav>
+        
+        <button class="logout-button" onclick="logout()">Log out</button>
+
+    </header>
+
+    <main>
+        <div id="welcome" class="content active">
+            <h1>Services offerts</h1>
+            <p>Supervision en temps réel</p>
+            <p>Gestion sécurisée des objets connectés</p>
+            <p>Sécurisation du réseau IOT</p>
+            <p>Détection et réponse aux menaces</p>
+        </div>
+
+        <div id="contact" class="content">
+            <div class="profile-card">
+                <div class="image">
+                    <img src="images/télécharger-removebg-preview.png" class="profile-img" alt="Photo de profil">
+                </div>
+                <div class="text-data">
+                    <span class="name">Hiba Amar</span>
+                    <span class="job" style="color: black; display: block; margin-top: 5px;">Computer Engineer</span>
+                </div>
+                <div class="social-icons">
+                    <a href="https://facebook.com" target="_blank" class="facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="https://instagram.com" target="_blank" class="instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="https://linkedin.com" target="_blank" class="linkedin"><i class="fab fa-linkedin-in"></i></a>
+                  </div>
+                  
+                <div class="contact-info">
+                    <div><i class="fas fa-phone-alt"></i> +216 56598431</div>
+                    <div><i class="fas fa-envelope"></i> amarhiba010@gmail.com</div>
+                    <div><i class="fas fa-map-marker-alt"></i> Sousse, Tunisie</div>
+                </div>
+                  
+            </div>
+        </div>
+
+        <div id="configuration" class="content">
+            <h3>Gestion des objets</h3>
+            <button class="add-btn" onclick="afficherFormulaire()">+ Ajouter</button>
+
+            <table id="sensorTable">
+                <tr>
+                    <th>ID</th>
+                    <th>Nom du capteur</th>
+                    <th>Référence</th>
+                    <th>Actions</th>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>Température</td>
+                    <td>KY001TS</td>
+                    <td>
+                        <button class="btn delete-btn" onclick="supprimerObjet('1')">
+                            <i class="fas fa-trash"></i> Supprimer
+                        </button>                        
+                        <button class="btn connect-btn" onclick="connecterObjet('1')">
+                            <i class="fas fa-link"></i> Connecter
+                        </button>
+                    </td>
+                </tr>
+            </table>
+            
+            <div id="conteneurAjout" class="container-ajout">
+                <button class="close-btn" onclick="fermerFormulaire()">X</button>
+                <h3>Ajouter un objet</h3>
+                <div class="form-group">
+                    <label for="nom">Nom du capteur</label>
+                    <input type="text" id="nom">
+                </div>
+                <div class="form-group">
+                    <label for="reference">Référence</label>
+                    <input type="text" id="reference">
+                </div>
+                <button class="submit-btn" onclick="ajouterObjet()">Ajouter</button>                
+            </div>
+        </div>
+
+        <div id="supervision" class="content">
+            <h3>Supervision des objets IOT</h3>
+            <div class="supervision-container">
+                <section class="capteurs">
+                    <h2>Données des Capteurs</h2>
+                    <div class="capteur" id="temperature">Température : -- °C</div>
+                    <div class="capteur" id="humidite">Humidité : -- %</div>
+                    <div class="capteur" id="luminosite">Luminosité : -- Lux</div>
+                </section>
+        
+                <section class="controle">
+                    <h2>Contrôle des Objets</h2>
+                    <button id="btn-led" onclick="toggleLED()">Allumer LED</button>
+                    <button id="btn-fan" onclick="toggleFan()">Allumer Ventilateur</button>
+                    
+                </section>
+        
+                <section class="alertes">
+                    <h2>Alertes</h2>
+                    <div id="alert-messages">Aucune alerte pour le moment.</div>
+                </section>
+            </div>
+            
+            <div class="graphique">
+                <canvas id="temperatureChart"  width="800" height="264"></canvas>
+                <canvas id="humidityChart"  width="800" height="264"></canvas>
+                <canvas id="luminosityChart" width="800" height="264"></canvas>
+            </div>
+        </div>
+
+    </main>
+
+    <footer>
+        Copyright © 2025. All rights reserved.
+    </footer>
+    <script>
+    
+
+        // Navigation entre les onglets
+        document.addEventListener('DOMContentLoaded', function() {
+            const navButtons = document.querySelectorAll('.nav-button');
+            const contents = document.querySelectorAll('.content');
+            
+            navButtons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    contents.forEach(content => content.classList.remove('active'));
+                    const target = this.getAttribute('data-target');
+                    document.getElementById(target).classList.add('active');
+                });
+            });
+            
+            // Initialiser les graphiques
+            initCharts();
+            
+            // Charger les données initiales
+            chargerObjets();
+            chargerUtilisateurs();
+        });
+
+        // Menu hamburger pour mobile
+        function toggleMenu() {
+            const nav = document.getElementById('mainNav');
+            nav.classList.toggle('active');
+        }
+
+        // Fonctions pour la gestion des objets
+        function afficherFormulaire() {
+            document.getElementById("conteneurAjout").style.display = "block";
+        }
+
+        function fermerFormulaire() {
+            document.getElementById("conteneurAjout").style.display = "none";
+            document.getElementById('nom').value = "";
+            document.getElementById('reference').value = "";
+        }
+
+        function chargerObjets() {
+            fetch("http://localhost:5001/api/devices")
+                .then(response => response.json())
+                .then(data => {
+                    const table = document.getElementById("sensorTable");
+                    // Garder l'en-tête du tableau
+                    table.innerHTML = `
+                        <tr>
+                            <th>ID</th>
+                            <th>Nom du capteur</th>
+                            <th>Référence</th>
+                            <th>Actions</th>
+                        </tr>
+                    `;
+
+                    data.forEach(objet => {
+                        const row = table.insertRow();
+                        row.innerHTML = `
+                            <td>${objet._id}</td>
+                            <td>${objet.name}</td>
+                            <td>${objet.reference}</td>
+                            <td>
+                                <button class="btn delete-btn" onclick="supprimerObjet('${objet._id}')">
+                                    <i class="fas fa-trash"></i> Supprimer
+                                </button>
+                                <button class="btn connect-btn" onclick="connecterObjet('${objet._id}')">
+                                    <i class="fas fa-link"></i> Connecter
+                                </button>
+                            </td>
+                        `;
+                    });
+                })
+                .catch(error => console.error("Erreur de chargement :", error));
+        }
+
+        function ajouterObjet() {
+            const name = document.getElementById('nom').value.trim();
+            const reference = document.getElementById('reference').value.trim();
+
+            if (!name || !reference) {
+                alert("Veuillez remplir tous les champs !");
+                return;
+            }
+
+            fetch("http://localhost:5001/api/devices", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ name, reference })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log("Objet ajouté :", data);
+                chargerObjets();
+                fermerFormulaire();
+                alert("Objet ajouté avec succès !");
+            })
+            .catch(error => {
+                console.error("Erreur lors de l'ajout de l'objet :", error);
+                alert("Erreur lors de l'ajout de l'objet.");
+            });
+        }
+
+        function supprimerObjet(id) {
+            if (!confirm("Voulez-vous vraiment supprimer cet objet ?")) return;
+            
+            fetch(`http://localhost:5001/api/devices/${id}`, {
+                method: "DELETE"
+            })
+            .then(response => response.json())
+            .then(() => {
+                chargerObjets();
+                alert("Objet supprimé avec succès !");
+            })
+            .catch(error => {
+                console.error("Erreur lors de la suppression :", error);
+                alert("Erreur lors de la suppression.");
+            });
+        }
+
+        function connecterObjet(id) {
+            alert(`Connexion à l'objet ${id} en cours...`);
+            // Ici vous ajouteriez la logique de connexion réelle
+        }
+
+        
+        // Fonctions pour la supervision
+        function initCharts() {
+            const ctxTemperature = document.getElementById('temperatureChart').getContext('2d');
+            const ctxHumidity = document.getElementById('humidityChart').getContext('2d');
+            const ctxLuminosity = document.getElementById('luminosityChart').getContext('2d');
+            window.temperatureChart = new Chart(ctxTemperature, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Température', 'Reste'],
+                    datasets: [{
+                        label: 'Température (°C)',
+                        data: [0, 100],
+                        backgroundColor: ['#FF5733', '#F0F0F0'],
+                        borderColor: ['#FF5733', '#F0F0F0'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: 'white', // Change la couleur des labels de la légende en blanc
+                                font: {
+                                    size: 30,
+                                    weight: 'bold'
+                                },
+                            }
+                        }
+                    },
+        
+
+                }
+            });
+
+            window.humidityChart = new Chart(ctxHumidity, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Humidité', 'Reste'],
+                    datasets: [{
+                        label: 'Humidité (%)',
+                        data: [0, 100],
+                        backgroundColor: ['#4CAF50', '#F0F0F0'],
+                        borderColor: ['#4CAF50', '#F0F0F0'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: 'white',  // Change la couleur des labels de la légende en blanc
+                                font: {
+                                    size: 30,
+                                    weight: 'bold'
+                                },
+                            }
+                        }
+                    }
+                },
+
+            });
+            window.luminosityChart = new Chart(ctxLuminosity, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Luminosité', 'Reste'],
+                    datasets: [{
+                        label: 'Luminosité (Lux)',
+                        data: [0, 1000],
+                        backgroundColor: ['#FFD700', '#F0F0F0'],
+                        borderColor: ['#FFD700', '#F0F0F0'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: 'white',
+                                font: {
+                                    size: 30,
+                                    weight: 'bold'
+                                },
+                            }
+                        }
+                    },
+
+                }
+            });
+
+            // Simulation des valeurs des capteurs
+            setInterval(updateSensorData, 5000);
+        }
+
+        function updateSensorData() {
+            let temperature = 25 + Math.random() * 10; // Entre 25 et 35°C
+            let humidite = 50 + Math.random() * 40;  // Entre 50 et 90%
+            let luminosite = Math.floor(Math.random() * 1000); // 0 à 1000 Lux
+            // Mise à jour du texte des capteurs
+            document.getElementById("temperature").textContent = `Température : ${temperature.toFixed(1)} °C`;
+            document.getElementById("humidite").textContent = `Humidité : ${humidite.toFixed(1)} %`;
+            document.getElementById("luminosite").textContent = `Luminosité : ${luminosite} Lux`;
+            checkAlertes(temperature, humidite, luminosite);
+
+            // Mise à jour des graphiques
+            window.temperatureChart.data.datasets[0].data = [temperature.toFixed(1), (100 - temperature).toFixed(1)];
+            window.humidityChart.data.datasets[0].data = [humidite.toFixed(1), (100 - humidite).toFixed(1)];
+            window.luminosityChart.data.datasets[0].data = [luminosite, (1000 - luminosite)];
+
+            window.temperatureChart.update();
+            window.humidityChart.update();
+            window.luminosityChart.update();
+        }
+
+
+        // État des objets
+        let ledState = false;
+        let fanState = false;
+    
+
+        function toggleLED() {
+            ledState = !ledState;
+            document.getElementById("btn-led").textContent = ledState ? "Éteindre LED" : "Allumer LED";
+            // Ici vous ajouteriez la logique pour contrôler la LED
+        }
+
+        function toggleFan() {
+            fanState = !fanState;
+            document.getElementById("btn-fan").textContent = fanState ? "Éteindre Ventilateur" : "Allumer Ventilateur";
+            // Ici vous ajouteriez la logique pour contrôler le ventilateur
+        }
+
+        function checkAlertes(temperature, humidite) {
+            let alertMessage = "";
+            if (temperature > 30) alertMessage += "⚠️ Température trop élevée !<br>";
+            if (humidite > 80) alertMessage += "⚠️ Humidité trop élevée !<br>";
+            if (luminosite > 800) alertMessage += "⚠️ Luminosité trop élevée !<br>";
+            const alertDiv = document.getElementById("alert-messages");
+            alertDiv.innerHTML = alertMessage || "Aucune alerte pour le moment.";
+            
+            if (alertMessage) {
+                alertDiv.style.color = "red";
+            } else {
+                alertDiv.style.color = "green";
+            }
+        }
+        // Déconnexion
+        function logout() {
+            localStorage.clear();
+            sessionStorage.clear();
+            window.location.href = "login.html";
+        }
+        
+    </script>
+</body>
+</html>
