@@ -1,155 +1,70 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>HibaConnect - Login & Signup</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Poppins', sans-serif;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HibaConnect</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css">
 
-    body {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      background: linear-gradient(135deg, #020024 0%, #090979 35%, #00d4ff 100%);
+
+    <style>
+        /* Styles généraux */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #020024 0%, #090979 35%, #00d4ff 100%);
             background-attachment: fixed;
-      padding: 20px;
-    }
+            text-align: center;
+            padding: 20px;
+        }
 
-    .wrapper {
-      position: relative;
-      width: 100%;
-      max-width: 400px;
-      height: 500px;
-      background: #ffffff;
-      box-shadow: 0 0 50px #0ef;
-      border-radius: 20px;
-      padding: 40px;
-      overflow: hidden;
-    }
+        main {
+            max-width: 90%;
+            text-align: center;
+            padding: 20px;
+        }
 
-    .form-wrapper {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      width: 100%;
-      height: 100%;
-      transition: 1s ease-in-out;
-    }
+        /* Image du logo */
+        .logo {
+            width: 100%;
+            max-width: 250px;
+            height: auto;
+            margin-bottom: 20px;
+        }
 
-    .wrapper.active .form-wrapper.sign-in {
-      transform: translateY(-450px);
-    }
+        /* Style du titre */
+        h1 {
+            font-size: 2.5em;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
 
-    .wrapper .form-wrapper.sign-up {
-      position: absolute;
-      top: 450px;
-      left: 0;
-      width: 100%;
-    }
+        /* Bouton stylisé */
+        .btn {
+            font-size: 16px;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 25px;
+            background: linear-gradient(45deg, #8d49fd, #5691f3);
+            color: white;
+            cursor: pointer;
+            transition: 0.3s;
+        }
 
-    .wrapper.active .form-wrapper.sign-up {
-      transform: translateY(-450px);
-    }
+        .btn:hover {
+            background: linear-gradient(45deg, #5691f3, #8d49fd);
+        }
 
-    h2 {
-      font-size: 28px;
-      color: #2e399c;
-      text-align: center;
-    }
-
-    .input-group {
-      position: relative;
-      margin: 25px 0;
-      border-bottom: 2px solid #2e399c;
-    }
-
-    .input-group label {
-      position: absolute;
-      top: 50%;
-      left: 5px;
-      transform: translateY(-50%);
-      font-size: 16px;
-      color: #2e399c;
-      pointer-events: none;
-      transition: .5s;
-    }
-
-    .input-group input {
-      width: 100%;
-      height: 40px;
-      font-size: 16px;
-      color: #2e399c;
-      padding: 0 5px;
-      background: transparent;
-      border: none;
-      outline: none;
-    }
-
-    .input-group input:focus ~ label,
-    .input-group input:valid ~ label {
-      top: -5px;
-    }
-
-    .remember {
-      margin: -5px 0 15px 5px;
-    }
-
-    .remember label {
-      color: #2e399c;
-      font-size: 14px;
-    }
-
-    .remember input {
-      accent-color: #0ef;
-    }
-
-    button {
-      width: 100%;
-      height: 40px;
-      background: #0ef;
-      box-shadow: 0 0 10px #0ef;
-      font-size: 16px;
-      color: #000;
-      font-weight: 500;
-      cursor: pointer;
-      border-radius: 30px;
-      border: none;
-      outline: none;
-    }
-
-    button:hover {
-      background: #0ef;
-      box-shadow: 0 0 10px #0ef;
-    }
-
-    .signUp-link {
-      font-size: 14px;
-      text-align: center;
-      margin: 15px 0;
-    }
-
-    .signUp-link p {
-      color: #2e399c;
-    }
-
-    .signUp-link p a {
-      color: #0ef;
-      text-decoration: none;
-      font-weight: 500;
-    }
-
-    .signUp-link p a:hover {
-      text-decoration: underline;
-    }
-
-    footer {
+        /* Footer */
+        footer {
       position: absolute;
       bottom: 10px;
       left: 0;
@@ -159,170 +74,53 @@
       font-size: 12px;
     }
 
-    /* 📱 Responsive */
-    @media (max-width: 450px) {
-      .wrapper {
-    height: auto;
-    padding: 20px 15px;
-    border-radius: 16px;
-  }
-  .input-group {
-    margin: 20px 0;
-  }
-
-  .input-group input {
-    font-size: 14px;
-    height: 36px;
-  }
-      .form-wrapper {
-    flex-direction: column;
-    padding: 0;
-  }
-
-  h2 {
-    font-size: 22px;
-  }
-
-  button {
-    font-size: 14px;
-    height: 36px;
-  }
-  .signUp-link {
-    font-size: 13px;
-  }
-    }
-  </style>
-</head>
-<body>
-  <div class="wrapper">
-    <div class="form-wrapper sign-in">
-      <form>
-        <h2>Login</h2>
-        <div class="input-group">
-          <input type="text" required />
-          <label>Username</label>
-        </div>
-        <div class="input-group">
-          <input type="password" required />
-          <label>Password</label>
-        </div>
-        <div class="remember">
-          <label><input type="checkbox" /> Remember me</label>
-        </div>
-        <button type="submit">Login</button>
-        <div class="signUp-link">
-          <p>Don't have an account? <a href="#" class="signUpBtn-link">Sign Up</a></p>
-        </div>
-      </form>
-    </div>
-    <div class="form-wrapper sign-up">
-      <form>
-        <h2>Sign Up</h2>
-        <div class="input-group">
-          <input type="text" required />
-          <label>Username</label>
-        </div>
-        <div class="input-group">
-          <input type="password" required />
-          <label>Password</label>
-        </div>
-        <div class="remember">
-          <label><input type="checkbox" /> I agree to the terms & conditions</label>
-        </div>
-        <button type="submit">Sign Up</button>
-        <div class="signUp-link">
-          <p>Already have an account? <a href="#" class="signInBtn-link">Sign In</a></p>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <script>
-    const signInBtnLink = document.querySelector('.signInBtn-link');
-    const signUpBtnLink = document.querySelector('.signUpBtn-link');
-    const wrapper = document.querySelector('.wrapper');
-
-    signUpBtnLink.addEventListener('click', () => {
-      wrapper.classList.toggle('active');
-    });
-
-    signInBtnLink.addEventListener('click', () => {
-      wrapper.classList.toggle('active');
-    });
-  </script>
-
-  <script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
-
-  <script>
-    document.querySelector('.sign-in form').addEventListener('submit', async function (event) {
-      event.preventDefault();
-      const username = document.querySelector('.sign-in input[type="text"]').value;
-      const password = document.querySelector('.sign-in input[type="password"]').value;
-
-      try {
-        const response = await fetch('https://pfeback-zj61.onrender.com/api/auth/login', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ username, password })
-        });
-
-        if (response.headers.get('content-type').includes('application/json')) {
-          const data = await response.json();
-          if (response.ok) {
-            alert(data.message);
-            if (data.token) {
-              const decodedToken = jwt_decode(data.token);
-              if (decodedToken.role === 'Admin') {
-                window.location.href = 'Accueil.html';
-              } else if (decodedToken.role === 'User') {
-                window.location.href = 'Accueil1.html';
-              } else {
-                alert('Rôle non reconnu');
-              }
-            } else {
-              alert("Le token n'a pas été renvoyé");
+        /* ✅ MEDIA QUERIES (Responsive) ✅ */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2em;
             }
-          } else {
-            throw new Error(data.message || 'Échec de la connexion');
-          }
-        } else {
-          throw new Error('Réponse non JSON');
+
+            .btn {
+                font-size: 14px;
+                padding: 10px 20px;
+            }
+
+            main {
+                padding: 15px;
+            }
         }
-      } catch (error) {
-        console.error('Erreur login :', error);
-        alert('Erreur lors de la connexion.');
-      }
-    });
 
-    document.querySelector('.sign-up form').addEventListener('submit', async function (event) {
-      event.preventDefault();
-      const username = document.querySelector('.sign-up input[type="text"]').value;
-      const password = document.querySelector('.sign-up input[type="password"]').value;
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.8em;
+            }
 
-      try {
-        const response = await fetch('https://pfeback-zj61.onrender.com/api/auth/signup', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ username, password, role: 'User' })
+            .btn {
+                font-size: 14px;
+                padding: 8px 18px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <main>
+        <img src="images/Capture_d_écran_2025-03-25_130909-removebg-preview.png" class="logo">
+        <div id="welcome">
+            <h1>Bienvenue à HibaConnect !</h1>
+            <button class="btn" id="loginBtn">Log In</button>
+        </div>
+    </main>
+
+    <script>
+        document.getElementById('loginBtn').addEventListener('click', function () {
+            window.location.href = 'login.html';
         });
+    </script>
 
-        if (response.ok) {
-          const data = await response.json();
-          alert(data.message);
-          window.location.href = 'login.html';
-        } else {
-          const errorData = await response.json();
-          throw new Error(errorData.message || 'Échec de l\'inscription');
-        }
-      } catch (error) {
-        console.error("Erreur signup :", error);
-        alert("Erreur lors de l'inscription.");
-      }
-    });
-  </script>
-
-  <footer>
-    Copyright © 2025. All rights reserved
-  </footer>
+    <footer>
+        Copyright © 2025. All rights reserved
+    </footer>
 </body>
+
 </html>
