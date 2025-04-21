@@ -219,7 +219,7 @@
         }
 
         function chargerObjets() {
-            fetch("http://localhost:5001/api/devices")
+            fetch("https://pfeback-zj61.onrender.com/api/devices")
                 .then(response => response.json())
                 .then(data => {
                     const table = document.getElementById("sensorTable");
@@ -262,7 +262,7 @@
                 return;
             }
 
-            fetch("http://localhost:5001/api/devices", {
+            fetch("https://pfeback-zj61.onrender.com/api/devices", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ name, reference })
@@ -283,7 +283,7 @@
         function supprimerObjet(id) {
             if (!confirm("Voulez-vous vraiment supprimer cet objet ?")) return;
             
-            fetch(`http://localhost:5001/api/devices/${id}`, {
+            fetch(`https://pfeback-zj61.onrender.com/api/devices/${id}`, {
                 method: "DELETE"
             })
             .then(response => response.json())
@@ -313,7 +313,7 @@
         }
 
         function chargerUtilisateurs() {
-            fetch("http://localhost:5001/api/users")
+            fetch("https://pfeback-zj61.onrender.com/api/users")
                 .then(response => response.json())
                 .then(users => {
                     const table = document.getElementById("userTable");
@@ -350,7 +350,7 @@
         //         return;
         //     }
 
-        //     fetch("http://localhost:5001/api/users", {
+        //     fetch("https://pfeback-zj61.onrender.com/api/users", {
         //         method: "POST",
         //         headers: { "Content-Type": "application/json" },
         //         body: JSON.stringify({ name:username })
@@ -371,7 +371,7 @@
         function supprimerUtilisateur(id) {
             if (!confirm("Voulez-vous vraiment supprimer cet utilisateur ?")) return;
             
-            fetch(`http://localhost:5001/api/users/${id}`, {
+            fetch(`https://pfeback-zj61.onrender.com/api/users/${id}`, {
                 method: "DELETE"
             })
             .then(response => response.json())
