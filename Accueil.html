@@ -245,7 +245,7 @@
 
         function chargerObjets() {
             console.log("chargerObjets");
-            fetch("http://localhost:5001/api/devices")
+            fetch("https://lastback-q2av.onrender.com/api/devices")
                 .then(response => response.json())
                 .then(data => {
                     const table = document.getElementById("sensorTable");
@@ -290,7 +290,7 @@
                 return;
             }
 
-            fetch("http://localhost:5001/api/devices", {
+            fetch("https://lastback-q2av.onrender.com/api/devices", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ name, reference, status: 'disponible' })
@@ -311,7 +311,7 @@
         function supprimerObjet(id) {
             if (!confirm("Voulez-vous vraiment supprimer cet objet ?")) return;
             
-            fetch(`http://localhost:5001/api/devices/${id}`, {
+            fetch(`https://lastback-q2av.onrender.com/api/devices/${id}`, {
                 method: "DELETE"
             })
             .then(response => response.json())
@@ -332,7 +332,7 @@
         function changerDisponibilite(id, currentAvailability) {
             console.log("Changement de disponibilité pour l'objet avec ID:", id);
             const newAvailability = !currentAvailability; // toggle the availability
-            fetch(`http://localhost:5001/api/devices/${id}`, {
+            fetch(`https://lastback-q2av.onrender.com/api/devices/${id}`, {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json"
@@ -378,7 +378,7 @@
         }
 
         function chargerUtilisateurs() {
-            fetch("http://localhost:5001/api/users")
+            fetch("https://lastback-q2av.onrender.com/api/users")
                 .then(response => response.json())
                 .then(users => {
                     const table = document.getElementById("userTable");
@@ -436,7 +436,7 @@
         function supprimerUtilisateur(id) {
             if (!confirm("Voulez-vous vraiment supprimer cet utilisateur ?")) return;
             
-            fetch(`http://localhost:5001/api/users/${id}`, {
+            fetch(`https://lastback-q2av.onrender.com/api/users/${id}`, {
                 method: "DELETE"
             })
             .then(response => response.json())
@@ -621,7 +621,7 @@
                 return;
             }
 
-            fetch('http://localhost:5001/api/reservations', {
+            fetch('https://lastback-q2av.onrender.com/api/reservations', {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -691,7 +691,7 @@
                 return;
             }
 
-            fetch(`http://localhost:5001/api/reservations/${reservationId}`, {
+            fetch(`https://lastback-q2av.onrender.com/api/reservations/${reservationId}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
