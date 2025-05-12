@@ -14,7 +14,7 @@
     <header>
         <div class="header-left">
             <div class="app-name">
-                <a href="Accueil.html">
+                <a href="Accueil1.html">
                     <i class="fas fa-arrow-left"></i>
                     <img src="images/Capture_d_écran_2025-03-25_130909-removebg-preview.png" class="logo" alt="Logo">
                 </a>
@@ -24,8 +24,9 @@
         </div>
         <nav id="mainNav">
             <ul>
-                <li><button class="nav-button" data-target="configuration">Gestion des objets</button></li>
-                <li><button class="nav-button" data-target="supervision">Supervision</button></li>
+                <li><button class="nav-button" data-target="objets">Objets disponibles</button></li>
+                <li><button class="nav-button" data-target="mesObjets">Mes objets</button></li>
+                <li><button class="nav-button" data-target="supervision">Supervision des données</button></li>
                 <li><button class="nav-button" data-target="contact">Contact</button></li>
             </ul>
         </nav>
@@ -36,11 +37,11 @@
 
     <main>
         <div id="welcome" class="content active">
-            <h1>Services offerts</h1>
-            <p>Supervision en temps réel</p>
-            <p>Gestion sécurisée des objets connectés</p>
-            <p>Sécurisation du réseau IOT</p>
-            <p>Détection et réponse aux menaces</p>
+            <h1>Les services offerts par notre application "HibaConnect" sont : </h1>
+            <p>- Supervision en temps réel</p>
+            <p>- Gestion des objets connectés</p>
+            <p>- Sécurisation du réseau IOT</p>
+            <p>- Détection et réponse aux menaces</p>
         </div>
 
         <div id="contact" class="content">
@@ -67,45 +68,22 @@
             </div>
         </div>
 
-        <div id="configuration" class="content">
-            <h3>Gestion des objets</h3>
-            <button class="add-btn" onclick="afficherFormulaire()">+ Ajouter</button>
-
+        <div id="objets" class="content">
+            <h3>Liste des objets disponibles</h3>
             <table id="sensorTable">
+              <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>Nom du capteur</th>
-                    <th>Référence</th>
-                    <th>Actions</th>
+                  <th>ID</th>
+                  <th>Nom d'objet</th>
+                  <th>Référence</th>
+                  <th>Disponibilité</th>
+                  <th>Actions</th>
                 </tr>
-                <tr>
-                    <td>1</td>
-                    <td>Température</td>
-                    <td>KY001TS</td>
-                    <td>
-                        <button class="btn delete-btn" onclick="supprimerObjet('1')">
-                            <i class="fas fa-trash"></i> Supprimer
-                        </button>                        
-                        <button class="btn connect-btn" onclick="connecterObjet('1')">
-                            <i class="fas fa-link"></i> Connecter
-                        </button>
-                    </td>
-                </tr>
+              </thead>
+              <tbody id="sensorTableBody">
+                <!-- Les objets seront injectés ici -->
+              </tbody>
             </table>
-            
-            <div id="conteneurAjout" class="container-ajout">
-                <button class="close-btn" onclick="fermerFormulaire()">X</button>
-                <h3>Ajouter un objet</h3>
-                <div class="form-group">
-                    <label for="nom">Nom du capteur</label>
-                    <input type="text" id="nom">
-                </div>
-                <div class="form-group">
-                    <label for="reference">Référence</label>
-                    <input type="text" id="reference">
-                </div>
-                <button class="submit-btn" onclick="ajouterObjet()">Ajouter</button>                
-            </div>
         </div>
 
         <div id="supervision" class="content">
@@ -137,6 +115,22 @@
                 <canvas id="luminosityChart" width="800" height="264"></canvas>
             </div>
         </div>
+        <div id="mesObjets" class="content">
+            <h3>Mes objets réservés</h3>
+            <table id="reservedSensorTable">
+              <thead>
+                <tr>
+                  <th>Nom d'objet</th>
+                  <th>Référence</th>
+                  <th>Status</th>
+                  <th>Date de réservation</th>
+                </tr>
+              </thead>
+              <tbody id="reservedSensorTableBody">
+                <!-- Les objets réservés seront injectés ici -->
+              </tbody>
+            </table>
+          </div>
 
     </main>
 
@@ -144,28 +138,220 @@
         Copyright © 2025. All rights reserved.
     </footer>
     <script>
-    
+    document.addEventListener('DOMContentLoaded', function() {
+        const navButtons = document.querySelectorAll('.nav-button');
+        const contents = document.querySelectorAll('.content');
+        
+        navButtons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                contents.forEach(content => content.classList.remove('active'));
+                const target = this.getAttribute('data-target');
+                document.getElementById(target).classList.add('active');
+                
+                // Refresh devices when "Objets disponibles" tab is clicked
+                if (target === 'objets') {
+                    fetchDevices();
+                }
+            });
+        });
+        
+        // Initial fetch of devices when page loads
+        fetchDevices();
+    });
+
+    function fetchDevices() {
+      fetch("http://localhost:5001/api/devices")
+        .then(response => response.json())
+        .then(data => {
+          const tbody = document.getElementById("sensorTableBody");
+          tbody.innerHTML = ''; // Clear existing content
+
+          data.forEach(objet => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+              <td>${objet._id}</td>
+              <td>${objet.name}</td>
+              <td>${objet.reference}</td>
+              <td>Disponible</td>
+              <td>
+                <button class="btn reserve-btn" onclick="reserveDevice('${objet._id}')">
+                    <i class="fas fa-calendar-check"></i> Réserver
+                </button>
+              </td>
+            `;
+            tbody.appendChild(row);
+          });
+        })
+        .catch(error => console.error("Erreur de chargement :", error));
+    }
+
+    const reserveDevice = async (deviceId) => {
+        const userId = localStorage.getItem("userId");
+        const token = localStorage.getItem("token");
+
+        console.log("=== Starting Reservation Process ===");
+        console.log("User ID:", userId);
+        console.log("Token exists:", !!token);
+        console.log("Device ID:", deviceId);
+
+        if (!userId || !token) {
+            alert("Veuillez vous connecter pour effectuer une réservation.");
+            window.location.href = "login.html";
+            return;
+        }
+
+        const response = await fetch('http://localhost:5001/api/reservations/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ deviceId, userId })
+        });
+
+        if (!response.ok) {
+            const data = await response.json();
+            throw new Error(data.message || 'Error creating reservation');
+        }
+
+        const data = await response.json();
+        console.log('Reservation created:', data);
+        alert(data.message || "Demande de réservation envoyée avec succès !");
+        fetchDevices(); // Refresh the list
+    };
+
+    async function fetchUserReservations() {
+        try {
+            const userId = localStorage.getItem('userId');
+            const token = localStorage.getItem('token');
+            
+            if (!userId || !token) {
+                alert('Veuillez vous connecter pour voir vos réservations');
+                return;
+            }
+
+            const response = await fetch(`http://localhost:5001/api/reservations/user/${userId}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error('Erreur lors de la récupération des réservations');
+            }
+
+            const reservations = await response.json();
+            displayUserReservations(reservations);
+        } catch (error) {
+            console.error('Error fetching user reservations:', error);
+            alert('Erreur lors de la récupération des réservations');
+        }
+    }
+
+    function displayUserReservations(reservations) {
+        const tbody = document.getElementById('reservedSensorTableBody');
+        tbody.innerHTML = '';
+
+        if (!reservations || reservations.length === 0) {
+            const row = document.createElement('tr');
+            row.innerHTML = '<td colspan="4" style="text-align: center;">Aucun objet réservé</td>';
+            tbody.appendChild(row);
+            return;
+        }
+
+        // Filtrer les réservations acceptées ou validées
+        const acceptedReservations = reservations.filter(reservation => 
+            reservation.status && (
+                reservation.status.toLowerCase() === 'accepté' ||
+                reservation.status.toLowerCase() === 'validée'
+            )
+        );
+
+        if (acceptedReservations.length === 0) {
+            const row = document.createElement('tr');
+            row.innerHTML = '<td colspan="4" style="text-align: center;">Aucun objet accepté</td>';
+            tbody.appendChild(row);
+            return;
+        }
+
+        acceptedReservations.forEach(reservation => {
+            const row = document.createElement('tr');
+            const date = new Date(reservation.createdAt);
+            const formattedDate = date.toLocaleDateString('fr-FR', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+
+            // Add null checks for device data
+            const deviceName = reservation.device?.name || 'N/A';
+            const deviceReference = reservation.device?.reference || 'N/A';
+            const status = reservation.status || 'En attente';
+
+            row.innerHTML = `
+                <td>${deviceName}</td>
+                <td>${deviceReference}</td>
+                <td>${status}</td>
+                <td>${formattedDate}</td>
+            `;
+            tbody.appendChild(row);
+        });
+    }
 
         // Navigation entre les onglets
         document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM Content Loaded');
+            
+            // Initialize navigation
             const navButtons = document.querySelectorAll('.nav-button');
             const contents = document.querySelectorAll('.content');
+            
+            console.log('Found nav buttons:', navButtons.length);
+            console.log('Found content sections:', contents.length);
             
             navButtons.forEach(button => {
                 button.addEventListener('click', function(e) {
                     e.preventDefault();
-                    contents.forEach(content => content.classList.remove('active'));
                     const target = this.getAttribute('data-target');
-                    document.getElementById(target).classList.add('active');
+                    console.log('Button clicked, target:', target);
+                    
+                    // Hide all content sections
+                    contents.forEach(content => {
+                        if (content) {
+                            content.classList.remove('active');
+                        }
+                    });
+                    
+                    // Show the selected content
+                    const targetContent = document.getElementById(target);
+                    if (targetContent) {
+                        targetContent.classList.add('active');
+                        
+                        // If clicking on mesObjets, fetch the reservations
+                        if (target === 'mesObjets') {
+                            console.log('Mes objets clicked, fetching reservations...');
+                            fetchUserReservations();
+                        }
+                    } else {
+                        console.error('Target content not found:', target);
+                    }
                 });
             });
             
-            // Initialiser les graphiques
-            initCharts();
+            // Initialize charts if the elements exist
+            const temperatureChart = document.getElementById('temperatureChart');
+            const humidityChart = document.getElementById('humidityChart');
+            const luminosityChart = document.getElementById('luminosityChart');
             
-            // Charger les données initiales
-            chargerObjets();
-            chargerUtilisateurs();
+            if (temperatureChart && humidityChart && luminosityChart) {
+                initCharts();
+            }
+            
+            // Load initial data
+            fetchDevices();
         });
 
         // Menu hamburger pour mobile
@@ -174,100 +360,6 @@
             nav.classList.toggle('active');
         }
 
-        // Fonctions pour la gestion des objets
-        function afficherFormulaire() {
-            document.getElementById("conteneurAjout").style.display = "block";
-        }
-
-        function fermerFormulaire() {
-            document.getElementById("conteneurAjout").style.display = "none";
-            document.getElementById('nom').value = "";
-            document.getElementById('reference').value = "";
-        }
-
-        function chargerObjets() {
-            fetch("https://pfeback-zj61.onrender.com/api/devices")
-                .then(response => response.json())
-                .then(data => {
-                    const table = document.getElementById("sensorTable");
-                    // Garder l'en-tête du tableau
-                    table.innerHTML = `
-                        <tr>
-                            <th>ID</th>
-                            <th>Nom du capteur</th>
-                            <th>Référence</th>
-                            <th>Actions</th>
-                        </tr>
-                    `;
-
-                    data.forEach(objet => {
-                        const row = table.insertRow();
-                        row.innerHTML = `
-                            <td>${objet._id}</td>
-                            <td>${objet.name}</td>
-                            <td>${objet.reference}</td>
-                            <td>
-                                <button class="btn delete-btn" onclick="supprimerObjet('${objet._id}')">
-                                    <i class="fas fa-trash"></i> Supprimer
-                                </button>
-                                <button class="btn connect-btn" onclick="connecterObjet('${objet._id}')">
-                                    <i class="fas fa-link"></i> Connecter
-                                </button>
-                            </td>
-                        `;
-                    });
-                })
-                .catch(error => console.error("Erreur de chargement :", error));
-        }
-
-        function ajouterObjet() {
-            const name = document.getElementById('nom').value.trim();
-            const reference = document.getElementById('reference').value.trim();
-
-            if (!name || !reference) {
-                alert("Veuillez remplir tous les champs !");
-                return;
-            }
-
-            fetch("https://pfeback-zj61.onrender.com/api/devices", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ name, reference })
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log("Objet ajouté :", data);
-                chargerObjets();
-                fermerFormulaire();
-                alert("Objet ajouté avec succès !");
-            })
-            .catch(error => {
-                console.error("Erreur lors de l'ajout de l'objet :", error);
-                alert("Erreur lors de l'ajout de l'objet.");
-            });
-        }
-
-        function supprimerObjet(id) {
-            if (!confirm("Voulez-vous vraiment supprimer cet objet ?")) return;
-            
-            fetch(`https://pfeback-zj61.onrender.com/api/devices/${id}`, {
-                method: "DELETE"
-            })
-            .then(response => response.json())
-            .then(() => {
-                chargerObjets();
-                alert("Objet supprimé avec succès !");
-            })
-            .catch(error => {
-                console.error("Erreur lors de la suppression :", error);
-                alert("Erreur lors de la suppression.");
-            });
-        }
-
-        function connecterObjet(id) {
-            alert(`Connexion à l'objet ${id} en cours...`);
-            // Ici vous ajouteriez la logique de connexion réelle
-        }
 
         
         // Fonctions pour la supervision
