@@ -555,7 +555,7 @@
 
         async function fetchSensorData() {
     try {
-        const res = await fetch(`${apiBase}/data`);
+        const res = await fetch(`${apiBase}/latest`);
         const data = await res.json();
 
         const temperature = data.temperature;
