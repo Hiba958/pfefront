@@ -449,7 +449,7 @@
                 alert("Erreur lors de la suppression.");
             });
         }
-        const apiBase = "https://lastback-q2av.onrender.com/api/devices"; // Remplace par ton URL réelle
+        const apiBase = "https://lastback-q2av.onrender.com/api/sensors"; // Remplace par ton URL réelle
         // Fonctions pour la supervision
         function initCharts() {
             const ctxTemperature = document.getElementById('temperatureChart').getContext('2d');
@@ -559,8 +559,8 @@
         const data = await res.json();
 
         const temperature = data.temperature;
-        const humidity = data.humidity;
-        const luminosity = data.luminosity;
+        const humidity = data.humidite;
+        const luminosity = data.luminosite;
 
         document.getElementById("temperature").textContent = `Température : ${temperature} °C`;
         document.getElementById("humidite").textContent = `Humidité : ${humidity} %`;
