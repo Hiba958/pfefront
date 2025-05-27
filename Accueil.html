@@ -20,6 +20,7 @@
                 </a>
             </div>
             <button class="menu-btn" onclick="toggleMenu()">☰</button>
+
         </div>
         <nav id="mainNav">
             <ul>
@@ -32,6 +33,7 @@
         </nav>
         
         <button class="logout-button" onclick="logout()">Log out</button>
+
     </header>
 
     <main>
@@ -56,13 +58,14 @@
                     <a href="https://facebook.com" target="_blank" class="facebook"><i class="fab fa-facebook-f"></i></a>
                     <a href="https://instagram.com" target="_blank" class="instagram"><i class="fab fa-instagram"></i></a>
                     <a href="https://linkedin.com" target="_blank" class="linkedin"><i class="fab fa-linkedin-in"></i></a>
-                </div>
-                
+                  </div>
+                  
                 <div class="contact-info">
                     <div><i class="fas fa-phone-alt"></i> +216 56598431</div>
                     <div><i class="fas fa-envelope"></i> amarhiba010@gmail.com</div>
                     <div><i class="fas fa-map-marker-alt"></i> Sousse, Tunisie</div>
                 </div>
+                  
             </div>
         </div>
 
@@ -85,14 +88,15 @@
                     <td>
                         <button class="btn delete-btn" onclick="supprimerObjet('1')">
                             <i class="fas fa-trash"></i> Supprimer
-                        </button>
+                        </button>                        
                         <button class="btn connect-btn" onclick="connecterObjet('1')">
                             <i class="fas fa-link"></i> Connecter
                         </button>
+                        
                     </td>
                 </tr>
             </table>
-
+            
             <div id="objectFormContainer" class="container-ajout">
                 <button class="close-btn" onclick="fermerObjectForm()">X</button>
                 <h4>Ajouter un objet</h4>
@@ -104,10 +108,9 @@
                     <label for="objectReference">Référence</label>
                     <input type="text" id="objectReference" autocomplete="off">
                 </div>
-                <button class="submit-btn" onclick="ajouterObjet()">Ajouter</button>
+                <button class="submit-btn" onclick="ajouterObjet()">Ajouter</button>                
             </div>
         </div>
-
         <div id="supervision" class="content">
             <h3>Supervision des objets IOT</h3>
             <div class="supervision-container">
@@ -117,28 +120,30 @@
                     <div class="capteur" id="humidite">Humidité : -- %</div>
                     <div class="capteur" id="luminosite">Luminosité : -- Lux</div>
                 </section>
-
+        
                 <section class="controle">
                     <h2>Contrôle des Objets</h2>
                     <button id="btn-led" onclick="toggleLED()">Allumer LED</button>
                     <button id="btn-fan" onclick="toggleFan()">Allumer Ventilateur</button>
+                    
                 </section>
-
+        
                 <section class="alertes">
                     <h2>Alertes</h2>
                     <div id="alert-messages">Aucune alerte pour le moment.</div>
                 </section>
             </div>
-
+            
             <div class="graphique">
-                <canvas id="temperatureChart" width="200" height="100"></canvas>
-                <canvas id="humidityChart" width="200" height="100"></canvas>
-                <canvas id="luminosityChart" width="200" height="100"></canvas>
+                    <canvas id="temperatureChart"  width="200" height="100"></canvas>
+                    <canvas id="humidityChart"  width="200" height="100"></canvas>
+                    <canvas id="luminosityChart" width="200" height="100"></canvas>
             </div>
         </div>
-
         <div id="users" class="content">
             <h3>Gestion des utilisateurs</h3>
+            <!-- <button class="add-btn" onclick="afficherUserForm()">+ Ajouter</button> -->
+
             <table id="userTable">
                 <tr>
                     <th>ID</th>
@@ -155,34 +160,49 @@
                     </td>
                 </tr>
             </table>
+        
+                
+            
+            <!-- <div id="userFormContainer" class="container-ajout">
+                <button class="close-btn" onclick="fermerUserForm()">X</button>
+                <h4>Ajouter un utilisateur</h4>
+                <div class="form-group">
+                    <label for="username">Nom d'utilisateur</label>
+                    <input type="text" id="username" autocomplete="off">
+                </div>
+                <button class="submit-btn" onclick="ajouterUtilisateur()">Ajouter</button>                
+            </div> -->
         </div>
-
         <div id="reservations" class="content">
             <h4>Liste des demandes</h4>
-            <table id="reservationTable" border="1">
+              <table id="reservationTable" border="1">
                 <thead>
-                    <tr>
-                        <th>Utilisateur</th>
-                        <th>Objet</th>
-                        <th>Status</th>
-                        <th>Date</th>
-                        <th>Action</th>
-                    </tr>
+                  <tr>
+                    <th>Utilisateur</th>
+                    <th>Objet</th>
+                    <th>Status</th>
+                    <th>Date</th>
+                    <th>Action</th>
+                  </tr>
                 </thead>
-                <tbody id="reservationBody"></tbody>
-            </table>
+                <tbody id="reservationBody">
+                </tbody>
+              </table>
         </div>
+
     </main>
 
     <footer>
         Copyright © 2025. All rights reserved.
     </footer>
     <script>
+    
+
         // Navigation entre les onglets
         document.addEventListener('DOMContentLoaded', function() {
             const navButtons = document.querySelectorAll('.nav-button');
             const contents = document.querySelectorAll('.content');
-
+            
             navButtons.forEach(button => {
                 button.addEventListener('click', function(e) {
                     e.preventDefault();
@@ -191,10 +211,10 @@
                     document.getElementById(target).classList.add('active');
                 });
             });
-
+            
             // Initialiser les graphiques
             initCharts();
-
+            
             // Charger les données initiales
             chargerObjets();
             chargerUtilisateurs();
@@ -226,4 +246,493 @@
         function chargerObjets() {
             console.log("chargerObjets");
             fetch("https://lastback-q2av.onrender.com/api/devices")
-                .then(response =>
+                .then(response => response.json())
+                .then(data => {
+                    const table = document.getElementById("sensorTable");
+                    // Garder l'en-tête du tableau
+                    table.innerHTML = `
+                        <tr>
+                            <th>ID</th>
+                            <th>Nom du capteur</th>
+                            <th>Référence</th>
+                            <th>Disponibilité</th>
+                            <th>Actions</th>
+                        </tr>
+                    `;
+
+                    data.forEach(objet => {
+                        const row = table.insertRow();
+                        row.innerHTML = `
+                            <td>${objet._id}</td>
+                            <td>${objet.name}</td>
+                            <td>${objet.reference}</td>
+                            <td>Disponible</td>
+                            <td>
+                                <button class="btn delete-btn" onclick="supprimerObjet('${objet._id}')">
+                                    <i class="fas fa-trash"></i> Supprimer
+                                </button>
+                                <button class="btn connect-btn" onclick="connecterObjet('${objet._id}')">
+                                    <i class="fas fa-link"></i> Connecter
+                                </button>
+                            </td>
+                        `;
+                    });
+                })
+                .catch(error => console.error("Erreur de chargement :", error));
+        }
+
+        function ajouterObjet() {
+            const name = document.getElementById('objectName').value.trim();
+            const reference = document.getElementById('objectReference').value.trim();
+
+            if (!name || !reference) {
+                alert("Veuillez remplir tous les champs !");
+                return;
+            }
+
+            fetch("https://lastback-q2av.onrender.com/api/devices", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ name, reference, status: 'disponible' })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log("Objet ajouté :", data);
+                chargerObjets();
+                fermerObjectForm();
+                alert("Objet ajouté avec succès !");
+            })
+            .catch(error => {
+                console.error("Erreur lors de l'ajout de l'objet :", error);
+                alert("Erreur lors de l'ajout de l'objet.");
+            });
+        }
+
+        function supprimerObjet(id) {
+            if (!confirm("Voulez-vous vraiment supprimer cet objet ?")) return;
+            
+            fetch(`https://lastback-q2av.onrender.com/api/devices/${id}`, {
+                method: "DELETE"
+            })
+            .then(response => response.json())
+            .then(() => {
+                chargerObjets();
+                alert("Objet supprimé avec succès !");
+            })
+            .catch(error => {
+                console.error("Erreur lors de la suppression :", error);
+                alert("Erreur lors de la suppression.");
+            });
+        }
+
+        function connecterObjet(id) {
+            alert(`Connexion à l'objet ${id} est réussie`);
+            // Ici vous ajouteriez la logique de connexion réelle
+        }
+        function changerDisponibilite(id, currentAvailability) {
+            console.log("Changement de disponibilité pour l'objet avec ID:", id);
+            const newAvailability = !currentAvailability; // toggle the availability
+            fetch(`https://lastback-q2av.onrender.com/api/devices/${id}`, {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ availability: newAvailability })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const contentType = response.headers.get('content-type');
+                if (contentType && contentType.includes('application/json')) {
+                    return response.json();
+                } else {
+            return response.text();
+        }
+    })
+    .then(data => {
+        if (typeof data === 'object') {
+            console.log("Objet mis à jour:", data);
+            alert("Disponibilité modifiée avec succès !");
+            chargerObjets(); // Refresh the list
+        } else {
+            console.error("Non-JSON response received:", data);
+            throw new Error("Server did not return JSON");
+        }
+    })
+    .catch(error => {
+        console.error("Erreur lors de la mise à jour de la disponibilité:", error);
+        alert(error.error || "Erreur lors du changement de disponibilité.");
+    }).finally(() => {
+        chargerObjets();
+    });
+}
+
+        function afficherUserForm() {
+            document.getElementById("userFormContainer").style.display = "block";
+        }
+
+        function fermerUserForm() {
+            document.getElementById("userFormContainer").style.display = "none";
+            document.getElementById('username').value = "";
+        }
+
+        function chargerUtilisateurs() {
+            fetch("https://lastback-q2av.onrender.com/api/users")
+                .then(response => response.json())
+                .then(users => {
+                    const table = document.getElementById("userTable");
+                    table.innerHTML = `
+                        <tr>
+                            <th>ID</th>
+                            <th>Nom d'utilisateur</th>
+                            <th>Actions</th>
+                        </tr>
+                    `;
+
+                    users.forEach(user => {
+                        if (user.role === "User") {
+                            const row = table.insertRow();
+                            row.innerHTML = `
+                                <td>${user._id}</td>
+                                <td>${user.username}</td>
+                                <td>
+                                    <button class="btn delete-btn" onclick="supprimerUtilisateur('${user._id}')">
+                                        <i class="fas fa-trash"></i> Supprimer
+                                    </button>
+                                </td>
+                            `;
+                        }
+                    });
+                })
+                .catch(error => console.error("Erreur lors du chargement des utilisateurs :", error));
+        }
+
+        // function ajouterUtilisateur() {
+        //     const username = document.getElementById("username").value.trim();
+        //     if (!username) {
+        //         alert("Veuillez entrer un nom d'utilisateur !");
+        //         return;
+        //     }
+
+        //     fetch("https://pfeback-zj61.onrender.com/api/users", {
+        //         method: "POST",
+        //         headers: { "Content-Type": "application/json" },
+        //         body: JSON.stringify({ name:username })
+        //     })
+        //     .then(response => response.json())
+        //     .then(data => {
+        //         console.log("Utilisateur ajouté :", data);
+        //         chargerUtilisateurs();
+        //         fermerUserForm();
+        //         alert("Utilisateur ajouté avec succès !");
+        //     })
+        //     .catch(error => {
+        //         console.error("Erreur lors de l'ajout de l'utilisateur :", error);
+        //         alert("Erreur lors de l'ajout de l'utilisateur.");
+        //     });
+        // }
+
+        function supprimerUtilisateur(id) {
+            if (!confirm("Voulez-vous vraiment supprimer cet utilisateur ?")) return;
+            
+            fetch(`https://lastback-q2av.onrender.com/api/users/${id}`, {
+                method: "DELETE"
+            })
+            .then(response => response.json())
+            .then(() => {
+                chargerUtilisateurs();
+                alert("Utilisateur supprimé avec succès !");
+            })
+            .catch(error => {
+                console.error("Erreur lors de la suppression de l'utilisateur :", error);
+                alert("Erreur lors de la suppression.");
+            });
+        }
+        const apiBase = "https://lastback-q2av.onrender.com/api/sensors"; // Remplace par ton URL réelle
+        // Fonctions pour la supervision
+        function initCharts() {
+            const ctxTemperature = document.getElementById('temperatureChart').getContext('2d');
+            const ctxHumidity = document.getElementById('humidityChart').getContext('2d');
+            const ctxLuminosity = document.getElementById('luminosityChart').getContext('2d');
+            window.temperatureChart = new Chart(ctxTemperature, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Température', 'Reste'],
+                    datasets: [{
+                        label: 'Température (°C)',
+                        data: [0, 100],
+                        backgroundColor: ['#FF5733', '#F0F0F0'],
+                        borderColor: ['#FF5733', '#F0F0F0'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: 'white', // Change la couleur des labels de la légende en blanc
+                                font: {
+                                    size: 30,
+                                    weight: 'bold'
+                                },
+                            }
+                        }
+                    },
+        
+
+                }
+            });
+
+            window.humidityChart = new Chart(ctxHumidity, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Humidité', 'Reste'],
+                    datasets: [{
+                        label: 'Humidité (%)',
+                        data: [0, 100],
+                        backgroundColor: ['#4CAF50', '#F0F0F0'],
+                        borderColor: ['#4CAF50', '#F0F0F0'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: 'white',  // Change la couleur des labels de la légende en blanc
+                                font: {
+                                    size: 30,
+                                    weight: 'bold'
+                                },
+                            }
+                        }
+                    }
+                },
+
+            });
+            window.luminosityChart = new Chart(ctxLuminosity, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Luminosité', 'Reste'],
+                    datasets: [{
+                        label: 'Luminosité (Lux)',
+                        data: [0, 1000],
+                        backgroundColor: ['#FFD700', '#F0F0F0'],
+                        borderColor: ['#FFD700', '#F0F0F0'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: 'white',
+                                font: {
+                                    size: 30,
+                                    weight: 'bold'
+                                },
+                            }
+                        }
+                    },
+
+                }
+            });
+
+            // Simulation des valeurs des capteurs
+            fetchSensorData();
+    setInterval(fetchSensorData, 5000);
+        }
+
+        async function fetchSensorData() {
+    try {
+       const res = await fetch(`${apiBase}/latest`);
+       console.log(res.status, res.ok);
+        const data = await res.json();
+        console.log(data);
+
+
+        const temperature = data.temperature;
+        console.log(document.getElementById("temperature"));
+        const humidity = data.humidite;
+        console.log(document.getElementById("humidite"));
+        const luminosity = data.luminosite;
+        console.log(document.getElementById("luminosite"));
+
+        document.getElementById("temperature").textContent = `Température : ${temperature} °C`;
+        document.getElementById("humidite").textContent = `Humidité : ${humidity} %`;
+        document.getElementById("luminosite").textContent = `Luminosité : ${luminosity} Lux`;
+
+        updateCharts(temperature, humidity, luminosity);
+        checkAlertes(temperature, humidity, luminosity);
+    } catch (error) {
+        console.error("Erreur lors de la récupération des données capteurs :", error);
+    }
+}
+
+function updateCharts(temperature, humidity, luminosity) {
+    window.temperatureChart.data.datasets[0].data = [temperature, 100 - temperature];
+    window.humidityChart.data.datasets[0].data = [humidity, 100 - humidity];
+    window.luminosityChart.data.datasets[0].data = [luminosity, 1000 - luminosity];
+
+    window.temperatureChart.update();
+    window.humidityChart.update();
+    window.luminosityChart.update();
+}
+
+function checkAlertes(temperature, humidity, luminosity) {
+    let alertMessage = "";
+    if (temperature > 30) alertMessage += "⚠️ Température trop élevée !<br>";
+    if (humidity > 80) alertMessage += "⚠️ Humidité trop élevée !<br>";
+    if (luminosity > 800) alertMessage += "⚠️ Luminosité trop élevée !<br>";
+
+    const alertDiv = document.getElementById("alert-messages");
+    alertDiv.innerHTML = alertMessage || "Aucune alerte pour le moment.";
+    alertDiv.style.color = alertMessage ? "red" : "green";
+}
+
+// Contrôle des appareils
+async function toggleDevice(device) {
+    if (device === "led") ledState = !ledState;
+    if (device === "fan") fanState = !fanState;
+
+    try {
+        await fetch(`${apiBase}/control`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                device,
+                state: device === "led" ? ledState : fanState
+            })
+        });
+
+        document.getElementById(`btn-${device}`).textContent =
+            (device === "led" ? ledState : fanState) ? `Éteindre ${device === "led" ? "LED" : "Ventilateur"}` : `Allumer ${device === "led" ? "LED" : "Ventilateur"}`;
+    } catch (error) {
+        console.error(`Erreur lors du contrôle du ${device} :`, error);
+    }
+}
+
+// Initialisation après chargement
+window.addEventListener('DOMContentLoaded', initCharts);
+        // Déconnexion
+        function logout() {
+            localStorage.clear();
+            sessionStorage.clear();
+            window.location.href = "login.html";
+        }
+        
+        // Function to fetch and display reservations
+        function fetchReservations() {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                alert('Veuillez vous connecter pour voir les demandes de réservation');
+                window.location.href = 'login.html';
+                return;
+            }
+
+            fetch('https://lastback-q2av.onrender.com/api/reservations', {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(reservations => {
+                const tbody = document.getElementById('reservationBody');
+                tbody.innerHTML = '';
+
+                if (!reservations || reservations.length === 0) {
+                    const row = document.createElement('tr');
+                    row.innerHTML = '<td colspan="5" style="text-align: center;">Aucune demande de réservation</td>';
+                    tbody.appendChild(row);
+                    return;
+                }
+
+                reservations.forEach(reservation => {
+                    const row = document.createElement('tr');
+                    const date = new Date(reservation.createdAt);
+                    const formattedDate = date.toLocaleDateString('fr-FR', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+
+                    // Safely access nested properties with fallbacks
+                    const username = reservation.user?.username || 'Utilisateur inconnu';
+                    const deviceName = reservation.device?.name || 'Objet inconnu';
+                    const status = reservation.status || 'en_attente';
+
+                    row.innerHTML = `
+                        <td>${username}</td>
+                        <td>${deviceName}</td>
+                        <td>${status}</td>
+                        <td>${formattedDate}</td>
+                        <td>
+                            <button class="btn accept-btn" onclick="updateReservationStatus('${reservation._id}', 'validée')">
+                                <i class="fas fa-check"></i> Accepter
+                            </button>
+                            <button class="btn reject-btn" onclick="updateReservationStatus('${reservation._id}', 'refusée')">
+                                <i class="fas fa-times"></i> Refuser
+                            </button>
+                        </td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching reservations:', error);
+                alert('Erreur lors de la récupération des demandes de réservation');
+            });
+        }
+
+        // Function to update reservation status
+        function updateReservationStatus(reservationId, status) {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                alert('Veuillez vous connecter pour gérer les réservations');
+                window.location.href = 'login.html';
+                return;
+            }
+
+            fetch(`https://lastback-q2av.onrender.com/api/reservations/${reservationId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ status })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                alert(data.message || 'Statut de la réservation mis à jour');
+                fetchReservations(); // Refresh the list
+            })
+            .catch(error => {
+                console.error('Error updating reservation status:', error);
+                alert('Erreur lors de la mise à jour du statut de la réservation');
+            });
+        }
+    </script>
+</body>
+</html>
