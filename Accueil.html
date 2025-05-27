@@ -449,7 +449,7 @@
                 alert("Erreur lors de la suppression.");
             });
         }
-        const apiBase = "https://lastback-q2av.onrender.com/api/devices"; // Remplace par ton URL réelle
+        const apiBase = "https://lastback-q2av.onrender.com/api/sensors"; // Remplace par ton URL réelle
         // Fonctions pour la supervision
         function initCharts() {
             const ctxTemperature = document.getElementById('temperatureChart').getContext('2d');
@@ -555,16 +555,22 @@
 
         async function fetchSensorData() {
     try {
-        const res = await fetch(${apiBase}/data);
+       const res = await fetch(`${apiBase}/latest`);
+       console.log(res.status, res.ok);
         const data = await res.json();
+        console.log(data);
+
 
         const temperature = data.temperature;
+        console.log(document.getElementById("temperature"));
         const humidity = data.humidite;
+        console.log(document.getElementById("humidite"));
         const luminosity = data.luminosite;
+        console.log(document.getElementById("luminosite"));
 
-        document.getElementById("temperature").textContent = Température : ${temperature} °C;
-        document.getElementById("humidite").textContent = Humidité : ${humidity} %;
-        document.getElementById("luminosite").textContent = Luminosité : ${luminosity} Lux;
+        document.getElementById("temperature").textContent = `Température : ${temperature} °C`;
+        document.getElementById("humidite").textContent = `Humidité : ${humidity} %`;
+        document.getElementById("luminosite").textContent = `Luminosité : ${luminosity} Lux`;
 
         updateCharts(temperature, humidity, luminosity);
         checkAlertes(temperature, humidity, luminosity);
@@ -600,7 +606,7 @@ async function toggleDevice(device) {
     if (device === "fan") fanState = !fanState;
 
     try {
-        await fetch(${apiBase}/control, {
+        await fetch(`${apiBase}/control`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -609,10 +615,10 @@ async function toggleDevice(device) {
             })
         });
 
-        document.getElementById(btn-${device}).textContent =
-            (device === "led" ? ledState : fanState) ? Éteindre ${device === "led" ? "LED" : "Ventilateur"} : Allumer ${device === "led" ? "LED" : "Ventilateur"};
+        document.getElementById(`btn-${device}`).textContent =
+            (device === "led" ? ledState : fanState) ? `Éteindre ${device === "led" ? "LED" : "Ventilateur"}` : `Allumer ${device === "led" ? "LED" : "Ventilateur"}`;
     } catch (error) {
-        console.error(Erreur lors du contrôle du ${device} :, error);
+        console.error(`Erreur lors du contrôle du ${device} :`, error);
     }
 }
 
