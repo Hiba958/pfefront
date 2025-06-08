@@ -111,7 +111,7 @@
                 <button class="submit-btn" onclick="ajouterObjet()">Ajouter</button>                
             </div>
         </div>
-        <div id="supervision" class="content">
+    <div id="supervision" class="content">
         <h3>Supervision des objets IoT</h3>
         <div class="supervision-container">
             <section class="capteurs">
@@ -133,20 +133,11 @@
             </section>
         </div>
         <div class="graphique">
-            <h2>Graphiques</h2>
             <canvas id="temperatureChart"></canvas>
             <canvas id="humidityChart"></canvas>
             <canvas id="luminosityChart"></canvas>
         </div>
     </div>
-            
-            <div class="graphique">
-                    <h2>Graphiques</h2>
-                    <canvas id="temperatureChart"  width="200" height="100"></canvas>
-                    <canvas id="humidityChart"  width="200" height="100"></canvas>
-                    <canvas id="luminosityChart" width="200" height="100"></canvas>
-            </div>
-        </div>
         <div id="users" class="content">
             <h3>Gestion des utilisateurs</h3>
             <!-- <button class="add-btn" onclick="afficherUserForm()">+ Ajouter</button> -->
@@ -456,7 +447,7 @@
                 alert("Erreur lors de la suppression.");
             });
         }
-             const apiBase = "https://lastback-q2av.onrender.com/api/sensors";
+       const apiBase = "https://lastback-q2av.onrender.com/api/devices";
         let ledStates = { red: false, yellow: false, green: false };
 
         function initCharts() {
@@ -581,7 +572,7 @@
                 console.error("Erreur lors de la récupération des données capteurs :", error);
                 const alertDiv = document.getElementById("alert-messages");
                 if (alertDiv) {
-                    alertDiv.innerHTML = "⚠️ Erreur de connexion au serveur.";
+                    alertDiv.innerHTML = `⚠️ Impossible de récupérer les données : ${error.message}`;
                     alertDiv.style.color = "red";
                 }
             }
@@ -619,7 +610,7 @@
         async function toggleDevice(led) {
             ledStates[led] = !ledStates[led];
             try {
-                const response = await fetch(`${apiBase}/control`, {
+                const response = await fetch(`${apiBase.replace('/devices', '/sensors')}/control`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
@@ -640,6 +631,11 @@
             } catch (error) {
                 console.error(`Erreur lors du contrôle de la LED ${led} :`, error);
                 ledStates[led] = !ledStates[led]; // Revertir l'état en cas d'erreur
+                const alertDiv = document.getElementById("alert-messages");
+                if (alertDiv) {
+                    alertDiv.innerHTML = `⚠️ Impossible de contrôler la LED : ${error.message}`;
+                    alertDiv.style.color = "red";
+                }
             }
         }
 
