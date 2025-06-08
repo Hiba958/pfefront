@@ -112,29 +112,33 @@
             </div>
         </div>
         <div id="supervision" class="content">
-            <h3>Supervision des objets IOT</h3>
-            <div class="supervision-container">
-                <section class="capteurs">
-                    <h2>Données des Capteurs</h2>
-                    <div class="capteur" id="temperature">Température : -- °C</div>
-                    <div class="capteur" id="humidite">Humidité : -- %</div>
-                    <div class="capteur" id="luminosite">Luminosité : -- Lux</div>
-                </section>
-        
-                <section class="controle">
-                    <h2>Contrôle des LEDs</h2>
-                   <button id="btn-red" onclick="toggleDevice('red')">Allumer LED Rouge</button>
-                    <button id="btn-yellow" onclick="toggleDevice('yellow')">Allumer LED Jaune</button>
-                    <button id="btn-green" onclick="toggleDevice('green')">Allumer LED Verte</button>
-                    
-                </section>
-        
-                <section class="alertes">
-                    <h2>Alertes</h2>
-                    <div id="alert-messages">Aucune alerte pour le moment.</div>
-                    <div id="window-simulated">Fenêtre ouverte</div>
-                </section>
-            </div>
+        <h3>Supervision des objets IoT</h3>
+        <div class="supervision-container">
+            <section class="capteurs">
+                <h2>Données des Capteurs</h2>
+                <div class="capteur" id="temperature">Température : -- °C</div>
+                <div class="capteur" id="humidite">Humidité : -- %</div>
+                <div class="capteur" id="luminosite">Luminosité : -- Lux</div>
+            </section>
+            <section class="controle">
+                <h2>Contrôle des LEDs</h2>
+                <button id="btn-red" onclick="toggleDevice('red')">Allumer LED Rouge</button>
+                <button id="btn-yellow" onclick="toggleDevice('yellow')">Allumer LED Jaune</button>
+                <button id="btn-green" onclick="toggleDevice('green')">Allumer LED Verte</button>
+            </section>
+            <section class="alertes">
+                <h2>Alertes</h2>
+                <div id="alert-messages">Aucune alerte pour le moment.</div>
+                <div id="window-simulated">Fenêtre ouverte</div>
+            </section>
+        </div>
+        <div class="graphique">
+            <h2>Graphiques</h2>
+            <canvas id="temperatureChart"></canvas>
+            <canvas id="humidityChart"></canvas>
+            <canvas id="luminosityChart"></canvas>
+        </div>
+    </div>
             
             <div class="graphique">
                     <h2>Graphiques</h2>
@@ -452,7 +456,7 @@
                 alert("Erreur lors de la suppression.");
             });
         }
-               const apiBase = "https://lastback-q2av.onrender.com/api/sensors";
+             const apiBase = "https://lastback-q2av.onrender.com/api/sensors";
         let ledStates = { red: false, yellow: false, green: false };
 
         function initCharts() {
@@ -481,10 +485,7 @@
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: {
-                        legend: {
-                            position: 'bottom',
-                            labels: { color: 'white', font: { size: 30, weight: 'bold' } }
-                        }
+                        legend: { position: 'bottom', labels: { color: '#333', font: { size: 14 } } }
                     }
                 }
             });
@@ -505,10 +506,7 @@
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: {
-                        legend: {
-                            position: 'bottom',
-                            labels: { color: 'white', font: { size: 30, weight: 'bold' } }
-                        }
+                        legend: { position: 'bottom', labels: { color: '#333', font: { size: 14 } } }
                     }
                 }
             });
@@ -529,10 +527,7 @@
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: {
-                        legend: {
-                            position: 'bottom',
-                            labels: { color: 'white', font: { size: 30, weight: 'bold' } }
-                        }
+                        legend: { position: 'bottom', labels: { color: '#333', font: { size: 14 } } }
                     }
                 }
             });
