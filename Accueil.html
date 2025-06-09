@@ -123,8 +123,10 @@
         
                 <section class="controle">
                     <h2>Contrôle des Objets</h2>
-                    <button id="btn-led" onclick="toggleLED()">Allumer LED</button>
-                    <button id="btn-fan" onclick="toggleFan()">Allumer Ventilateur</button>
+                    <button id="btn-led" onclick="toggleLED()">Allumer Lampe </button>
+                    <button id="btn-fan" onclick="toggleFan()">Ouvrir Ventilateur</button>
+                    <button id="btn-fan" onclick="toggleFan()">Ouvrir fenêtre</button>
+                    <button id="btn-fan" onclick="toggleFan()">Ouvrir Chauffage</button>
                     
                 </section>
         
@@ -591,10 +593,25 @@ function updateCharts(temperature, humidity, luminosity) {
 
 function checkAlertes(temperature, humidity, luminosity) {
     let alertMessage = "";
-    if (temperature > 30) alertMessage += "⚠️ Température trop élevée !<br>";
-    if (humidity > 80) alertMessage += "⚠️ Humidité trop élevée !<br>";
-    if (luminosity > 2000) alertMessage += "⚠️ Luminosité trop élevée !<br>";
-    if (luminosity < 2000) alertMessage += "⚠️ Luminosité trop basse !<br>";
+        let ledStatus = false;
+        if (temperature > 26) {
+        alertMessage += "❄️ Température > 26°C : Ouvrir le climatiseur !<br>";
+    } else if (temperature < 16) {
+        alertMessage += "🔥 Température < 16°C : Ouvrir le chauffage !<br>";
+    }
+        // Humidity alerts
+    if (humidity > 60) {
+        alertMessage += "💧 Humidité > 60% : LED allumée. Contrôle manuel d'ouverture de fenêtre recommandé.<br>";
+        ledStatus = true;
+    }
+
+    // Luminosity alerts
+    if (luminosity < 2000) {
+        alertMessage += "💡 Luminosité < 2000 : LED allumée. Simulation d'éclairage possible.<br>";
+        ledStatus = true;
+    } else {
+        alertMessage += "☀️ Luminosité suffisante : Pas besoin d'éclairage, ouverture de fenêtre possible.<br>";
+    }
 
     const alertDiv = document.getElementById("alert-messages");
     alertDiv.innerHTML = alertMessage || "Aucune alerte pour le moment.";
