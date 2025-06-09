@@ -595,19 +595,19 @@ function checkAlertes(temperature, humidity, luminosity) {
     let alertMessage = "";
         let ledStatus = false;
         if (temperature > 26) {
-        alertMessage += "❄️ Température > 26°C : Ouvrir le climatiseur !<br>";
+        alertMessage += "❄️ Température trop élevée : Ouvrir le climatiseur !<br>";
     } else if (temperature < 16) {
-        alertMessage += "🔥 Température < 16°C : Ouvrir le chauffage !<br>";
+        alertMessage += "🔥 Température trop basse : Ouvrir le chauffage !<br>";
     }
         // Humidity alerts
     if (humidity > 60) {
-        alertMessage += "💧 Humidité > 60% : LED allumée. Contrôle manuel d'ouverture de fenêtre recommandé.<br>";
+        alertMessage += "💧 Humidité trop élevée : LED allumée. Contrôle manuel d'ouverture de fenêtre recommandé.<br>";
         ledStatus = true;
     }
 
     // Luminosity alerts
     if (luminosity < 2000) {
-        alertMessage += "💡 Luminosité < 2000 : LED allumée. Simulation d'éclairage possible.<br>";
+        alertMessage += "💡 Luminosité trop basse : LED allumée. Simulation d'éclairage possible.<br>";
         ledStatus = true;
     } else {
         alertMessage += "☀️ Luminosité suffisante : Pas besoin d'éclairage, ouverture de fenêtre possible.<br>";
