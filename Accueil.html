@@ -593,7 +593,8 @@ function checkAlertes(temperature, humidity, luminosity) {
     let alertMessage = "";
     if (temperature > 30) alertMessage += "⚠️ Température trop élevée !<br>";
     if (humidity > 80) alertMessage += "⚠️ Humidité trop élevée !<br>";
-    if (luminosity > 800) alertMessage += "⚠️ Luminosité trop élevée !<br>";
+    if (luminosity > 2000) alertMessage += "⚠️ Luminosité trop élevée !<br>";
+    if (luminosity < 2000) alertMessage += "⚠️ Luminosité trop basse !<br>";
 
     const alertDiv = document.getElementById("alert-messages");
     alertDiv.innerHTML = alertMessage || "Aucune alerte pour le moment.";
