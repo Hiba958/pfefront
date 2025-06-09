@@ -1,4 +1,4 @@
-s<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
@@ -111,31 +111,35 @@ s<!DOCTYPE html>
                 <button class="submit-btn" onclick="ajouterObjet()">Ajouter</button>                
             </div>
         </div>
-    <div id="supervision" class="content">
-        <h3>Supervision des objets IoT</h3>
-        <div class="supervision-container">
-            <section class="capteurs">
-                <h2>Données des Capteurs</h2>
-                <div class="capteur" id="temperature">Température : -- °C</div>
-                <div class="capteur" id="humidite">Humidité : -- %</div>
-                <div class="capteur" id="luminosite">Luminosité : -- Lux</div>
-            </section>
-            <section class="controle">
-                <h2>Contrôle des objets</h2>
-                <button id="btn-led" onclick="toggleDevice('led')">Allumer LED</button>
-                <button id="btn-fan" onclick="toggleDevice('fan')">Allumer Ventilateur</button>
-            </section>
-            <section class="alertes">
-                <h2>Alertes</h2>
-                <div id="alert-messages">Aucune alerte pour le moment.</div>
-            </section>
+        <div id="supervision" class="content">
+            <h3>Supervision des objets IOT</h3>
+            <div class="supervision-container">
+                <section class="capteurs">
+                    <h2>Données des Capteurs</h2>
+                    <div class="capteur" id="temperature">Température : -- °C</div>
+                    <div class="capteur" id="humidite">Humidité : -- %</div>
+                    <div class="capteur" id="luminosite">Luminosité : -- Lux</div>
+                </section>
+        
+                <section class="controle">
+                    <h2>Contrôle des Objets</h2>
+                    <button id="btn-led" onclick="toggleLED()">Allumer LED</button>
+                    <button id="btn-fan" onclick="toggleFan()">Allumer Ventilateur</button>
+                    
+                </section>
+        
+                <section class="alertes">
+                    <h2>Alertes</h2>
+                    <div id="alert-messages">Aucune alerte pour le moment.</div>
+                </section>
+            </div>
+            
+            <div class="graphique">
+                    <canvas id="temperatureChart"  width="200" height="100"></canvas>
+                    <canvas id="humidityChart"  width="200" height="100"></canvas>
+                    <canvas id="luminosityChart" width="200" height="100"></canvas>
+            </div>
         </div>
-        <div class="graphique">
-            <canvas id="temperatureChart"></canvas>
-            <canvas id="humidityChart"></canvas>
-            <canvas id="luminosityChart"></canvas>
-        </div>
-    </div>
         <div id="users" class="content">
             <h3>Gestion des utilisateurs</h3>
             <!-- <button class="add-btn" onclick="afficherUserForm()">+ Ajouter</button> -->
@@ -445,166 +449,181 @@ s<!DOCTYPE html>
                 alert("Erreur lors de la suppression.");
             });
         }
- const apiBase = "https://lastback-q2av.onrender.com/api/sensors";
+        const apiBase = "https://lastback-q2av.onrender.com/api/sensors"; // Remplace par ton URL réelle
+        // Fonctions pour la supervision
+        function initCharts() {
+            const ctxTemperature = document.getElementById('temperatureChart').getContext('2d');
+            const ctxHumidity = document.getElementById('humidityChart').getContext('2d');
+            const ctxLuminosity = document.getElementById('luminosityChart').getContext('2d');
+            window.temperatureChart = new Chart(ctxTemperature, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Température', 'Reste'],
+                    datasets: [{
+                        label: 'Température (°C)',
+                        data: [0, 100],
+                        backgroundColor: ['#FF5733', '#F0F0F0'],
+                        borderColor: ['#FF5733', '#F0F0F0'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: 'white', // Change la couleur des labels de la légende en blanc
+                                font: {
+                                    size: 30,
+                                    weight: 'bold'
+                                },
+                            }
+                        }
+                    },
+        
 
-    let ledState = false;
-    let fanState = false;
+                }
+            });
 
-    function initCharts() {
-      const ctxTemperature = document.getElementById('temperatureChart').getContext('2d');
-      const ctxHumidity = document.getElementById('humidityChart').getContext('2d');
-      const ctxLuminosity = document.getElementById('luminosityChart').getContext('2d');
+            window.humidityChart = new Chart(ctxHumidity, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Humidité', 'Reste'],
+                    datasets: [{
+                        label: 'Humidité (%)',
+                        data: [0, 100],
+                        backgroundColor: ['#4CAF50', '#F0F0F0'],
+                        borderColor: ['#4CAF50', '#F0F0F0'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: 'white',  // Change la couleur des labels de la légende en blanc
+                                font: {
+                                    size: 30,
+                                    weight: 'bold'
+                                },
+                            }
+                        }
+                    }
+                },
 
-      window.temperatureChart = new Chart(ctxTemperature, {
-        type: 'doughnut',
-        data: {
-          labels: ['Température', 'Reste'],
-          datasets: [{
-            label: 'Température (°C)',
-            data: [0, 100],
-            backgroundColor: ['#FF5733', '#F0F0F0'],
-            borderColor: ['#FF5733', '#F0F0F0'],
-            borderWidth: 1
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: {
-              position: 'bottom',
-              labels: {
-                color: 'white',
-                font: { size: 14, weight: 'bold' }
-              }
-            }
-          }
+            });
+            window.luminosityChart = new Chart(ctxLuminosity, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Luminosité', 'Reste'],
+                    datasets: [{
+                        label: 'Luminosité (Lux)',
+                        data: [0, 1000],
+                        backgroundColor: ['#FFD700', '#F0F0F0'],
+                        borderColor: ['#FFD700', '#F0F0F0'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: 'white',
+                                font: {
+                                    size: 30,
+                                    weight: 'bold'
+                                },
+                            }
+                        }
+                    },
+
+                }
+            });
+
+            // Simulation des valeurs des capteurs
+            fetchSensorData();
+    setInterval(fetchSensorData, 5000);
         }
-      });
 
-      window.humidityChart = new Chart(ctxHumidity, {
-        type: 'doughnut',
-        data: {
-          labels: ['Humidité', 'Reste'],
-          datasets: [{
-            label: 'Humidité (%)',
-            data: [0, 100],
-            backgroundColor: ['#4CAF50', '#F0F0F0'],
-            borderColor: ['#4CAF50', '#F0F0F0'],
-            borderWidth: 1
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: {
-              position: 'bottom',
-              labels: {
-                color: 'white',
-                font: { size: 14, weight: 'bold' }
-              }
-            }
-          }
-        }
-      });
-
-      window.luminosityChart = new Chart(ctxLuminosity, {
-        type: 'doughnut',
-        data: {
-          labels: ['Luminosité', 'Reste'],
-          datasets: [{
-            label: 'Luminosité (Lux)',
-            data: [0, 1000],
-            backgroundColor: ['#FFD700', '#F0F0F0'],
-            borderColor: ['#FFD700', '#F0F0F0'],
-            borderWidth: 1
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: {
-              position: 'bottom',
-              labels: {
-                color: 'white',
-                font: { size: 14, weight: 'bold' }
-              }
-            }
-          }
-        }
-      });
-
-      fetchSensorData();
-      setInterval(fetchSensorData, 5000);
-    }
-
-    async function fetchSensorData() {
-      try {
-        const res = await fetch(${apiBase}/latest);
+        async function fetchSensorData() {
+    try {
+       const res = await fetch(`${apiBase}/latest`);
+       console.log(res.status, res.ok);
         const data = await res.json();
+        console.log(data);
+
 
         const temperature = data.temperature;
+        console.log(document.getElementById("temperature"));
         const humidity = data.humidite;
+        console.log(document.getElementById("humidite"));
         const luminosity = data.luminosite;
+        console.log(document.getElementById("luminosite"));
 
-        document.getElementById("temperature").textContent = Température : ${temperature} °C;
-        document.getElementById("humidite").textContent = Humidité : ${humidity} %;
-        document.getElementById("luminosite").textContent = Luminosité : ${luminosity} Lux;
+        document.getElementById("temperature").textContent = `Température : ${temperature} °C`;
+        document.getElementById("humidite").textContent = `Humidité : ${humidity} %`;
+        document.getElementById("luminosite").textContent = `Luminosité : ${luminosity} Lux`;
 
         updateCharts(temperature, humidity, luminosity);
         checkAlertes(temperature, humidity, luminosity);
-      } catch (error) {
+    } catch (error) {
         console.error("Erreur lors de la récupération des données capteurs :", error);
-      }
     }
+}
 
-    function updateCharts(temperature, humidity, luminosity) {
-      window.temperatureChart.data.datasets[0].data = [temperature, 100 - temperature];
-      window.humidityChart.data.datasets[0].data = [humidity, 100 - humidity];
-      window.luminosityChart.data.datasets[0].data = [luminosity, 1000 - luminosity];
+function updateCharts(temperature, humidity, luminosity) {
+    window.temperatureChart.data.datasets[0].data = [temperature, 100 - temperature];
+    window.humidityChart.data.datasets[0].data = [humidity, 100 - humidity];
+    window.luminosityChart.data.datasets[0].data = [luminosity, 1000 - luminosity];
 
-      window.temperatureChart.update();
-      window.humidityChart.update();
-      window.luminosityChart.update();
-    }
+    window.temperatureChart.update();
+    window.humidityChart.update();
+    window.luminosityChart.update();
+}
 
-    function checkAlertes(temperature, humidity, luminosity) {
-      let alertMessage = "";
-      if (temperature > 30) alertMessage += "⚠️ Température trop élevée !<br>";
-      if (humidity > 80) alertMessage += "⚠️ Humidité trop élevée !<br>";
-      if (luminosity > 800) alertMessage += "⚠️ Luminosité trop élevée !<br>";
+function checkAlertes(temperature, humidity, luminosity) {
+    let alertMessage = "";
+    if (temperature > 30) alertMessage += "⚠️ Température trop élevée !<br>";
+    if (humidity > 80) alertMessage += "⚠️ Humidité trop élevée !<br>";
+    if (luminosity > 800) alertMessage += "⚠️ Luminosité trop élevée !<br>";
 
-      const alertDiv = document.getElementById("alert-messages");
-      alertDiv.innerHTML = alertMessage || "Aucune alerte pour le moment.";
-      alertDiv.style.color = alertMessage ? "red" : "green";
-    }
+    const alertDiv = document.getElementById("alert-messages");
+    alertDiv.innerHTML = alertMessage || "Aucune alerte pour le moment.";
+    alertDiv.style.color = alertMessage ? "red" : "green";
+}
 
-    async function toggleDevice(device) {
-      if (device === "led") ledState = !ledState;
-      if (device === "fan") fanState = !fanState;
+// Contrôle des appareils
+async function toggleDevice(device) {
+    if (device === "led") ledState = !ledState;
+    if (device === "fan") fanState = !fanState;
 
-      try {
-        await fetch(${apiBase}/control, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            device,
-            state: device === "led" ? ledState : fanState
-          })
+    try {
+        await fetch(`${apiBase}/control`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                device,
+                state: device === "led" ? ledState : fanState
+            })
         });
 
-        document.getElementById(btn-${device}).textContent =
-          (device === "led" ? ledState : fanState)
-            ? Éteindre ${device === "led" ? "LED" : "Ventilateur"}
-            : Allumer ${device === "led" ? "LED" : "Ventilateur"};
-      } catch (error) {
-        console.error(Erreur lors du contrôle du ${device} :, error);
-      }
+        document.getElementById(`btn-${device}`).textContent =
+            (device === "led" ? ledState : fanState) ? `Éteindre ${device === "led" ? "LED" : "Ventilateur"}` : `Allumer ${device === "led" ? "LED" : "Ventilateur"}`;
+    } catch (error) {
+        console.error(`Erreur lors du contrôle du ${device} :`, error);
     }
+}
 
-    window.addEventListener('DOMContentLoaded', initCharts);
+// Initialisation après chargement
+window.addEventListener('DOMContentLoaded', initCharts);
         // Déconnexion
         function logout() {
             localStorage.clear();
