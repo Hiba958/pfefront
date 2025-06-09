@@ -98,8 +98,10 @@
         
                 <section class="controle">
                     <h2>Contrôle des Objets</h2>
-                    <button id="btn-led" onclick="toggleLED()">Allumer LED</button>
-                    <button id="btn-fan" onclick="toggleFan()">Allumer Ventilateur</button>
+                    <button id="btn-led" onclick="toggleLED()">Allumer Lampe </button>
+                    <button id="btn-fan" onclick="toggleFan()">Ouvrir Ventilateur</button>
+                    <button id="btn-fan" onclick="toggleFan()">Ouvrir fenêtre</button>
+                    <button id="btn-fan" onclick="toggleFan()">Ouvrir Chauffage</button>
                     
                 </section>
         
@@ -110,9 +112,9 @@
             </div>
             
             <div class="graphique">
-                <canvas id="temperatureChart"  width="800" height="264"></canvas>
-                <canvas id="humidityChart"  width="800" height="264"></canvas>
-                <canvas id="luminosityChart" width="800" height="264"></canvas>
+                    <canvas id="temperatureChart"  width="200" height="100"></canvas>
+                    <canvas id="humidityChart"  width="200" height="100"></canvas>
+                    <canvas id="luminosityChart" width="200" height="100"></canvas>
             </div>
         </div>
         <div id="mesObjets" class="content">
@@ -361,7 +363,7 @@
         }
 
 
-        const apiBase = "https://lastback-q2av.onrender.com/api/sensors"; // Remplace par ton URL réelle
+          const apiBase = "https://lastback-q2av.onrender.com/api/sensors"; // Remplace par ton URL réelle
         // Fonctions pour la supervision
         function initCharts() {
             const ctxTemperature = document.getElementById('temperatureChart').getContext('2d');
@@ -467,12 +469,18 @@
 
         async function fetchSensorData() {
     try {
-        const res = await fetch(`${apiBase}/latest`);
+       const res = await fetch(`${apiBase}/latest`);
+       console.log(res.status, res.ok);
         const data = await res.json();
+        console.log(data);
+
 
         const temperature = data.temperature;
+        console.log(document.getElementById("temperature"));
         const humidity = data.humidite;
+        console.log(document.getElementById("humidite"));
         const luminosity = data.luminosite;
+        console.log(document.getElementById("luminosite"));
 
         document.getElementById("temperature").textContent = `Température : ${temperature} °C`;
         document.getElementById("humidite").textContent = `Humidité : ${humidity} %`;
@@ -497,9 +505,25 @@ function updateCharts(temperature, humidity, luminosity) {
 
 function checkAlertes(temperature, humidity, luminosity) {
     let alertMessage = "";
-    if (temperature > 30) alertMessage += "⚠️ Température trop élevée !<br>";
-    if (humidity > 80) alertMessage += "⚠️ Humidité trop élevée !<br>";
-    if (luminosity > 800) alertMessage += "⚠️ Luminosité trop élevée !<br>";
+        let ledStatus = false;
+        if (temperature > 26) {
+        alertMessage += "❄️ Température trop élevée : Ouvrir le climatiseur !<br>";
+    } else if (temperature < 16) {
+        alertMessage += "🔥 Température trop basse : Ouvrir le chauffage !<br>";
+    }
+        // Humidity alerts
+    if (humidity > 60) {
+        alertMessage += "💧 Humidité trop élevée : LED allumée. Contrôle manuel d'ouverture de fenêtre recommandé.<br>";
+        ledStatus = true;
+    }
+
+    // Luminosity alerts
+    if (luminosity < 2000) {
+        alertMessage += "💡 Luminosité trop basse : LED allumée. Simulation d'éclairage possible.<br>";
+        ledStatus = true;
+    } else {
+        alertMessage += "☀️ Luminosité suffisante : Pas besoin d'éclairage, ouverture de fenêtre possible.<br>";
+    }
 
     const alertDiv = document.getElementById("alert-messages");
     alertDiv.innerHTML = alertMessage || "Aucune alerte pour le moment.";
